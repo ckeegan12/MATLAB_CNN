@@ -1,5 +1,5 @@
-# ADDER2d_to_CONV2d
-ResNet20 ML algorithm to a CNN
+# Resnet20 to MATLAB Model
+ResNet20 ML algorithm to a MATLAB algorithm using the Cifar10 training data set
 
 # Sources
 https://github.com/huawei-noah/AdderNet.git   
