@@ -1,35 +1,32 @@
-function output = myConv2d(input, weights, stride, padding)
-    % Custom 2D convolution mimicking PyTorch's nn.Conv2d
-    % Input: 4D tensor [H, W, C_in, N]
-    % Weights: 4D tensor
-    % Stride: [strideH, strideW]
-    % Padding: 'same'
-    
-    % Convert PyTorch weight format [C_out, C_in, kH, kW] to MATLAB-friendly [kH, kW, C_in, C_out]
-    weights = permute(weights, [3, 4, 2, 1]);  
-    
-    [H, W, C_in, N] = size(input);
-    [kH, kW, ~, C_out] = size(weights);
-    
-    if strcmp(padding, 'same')
-        padH = floor((kH - 1) / 2);
-        padW = floor((kW - 1) / 2);
-        input = padarray(input, [padH, padW], 0, 'both');
-    else
-        error('Only "same" padding is supported in this implementation.');
-    end
-    
-    % Compute output dimensions
-    outH = floor((H + 2*padH - kH) / stride(1)) + 1;
-    outW = floor((W + 2*padW - kW) / stride(2)) + 1;
-    
-    output = zeros(outH, outW, C_out, N);
-    
+function output = Conv2d(input)
+    % input: 4D tensor with size [height, width, channels, batch_size]
+    % output: 4D tensor after applying the convolution with size [height, width, 16, batch_size]
+
+    % Parameters
+    [height, width, channels, batch_size] = size(input);  % Get input size
+    out_channels = 16;   % Number of output channels
+    kernel_size = 3;     % Kernel size
+    stride = 1;          % Stride
+    padding = 1;         % Padding
+
+    % Define the filters (kernels) randomly
+    filters = randn(kernel_size, kernel_size, channels, num_filters);  % 3x3 filter, 3 input channels, 16 output channels
+
+    % Apply padding to the input (padding of 1 means 1 pixel around all sides)
+    padded_input = padarray(input, [padding padding], 0, 'both');  % Pad with zeros
+
+    % Output size calculation
+    out_height = (height + 2 * padding - kernel_size) / stride + 1;
+    out_width = (width + 2 * padding - kernel_size) / stride + 1;
+
+    % Initialize the output
+    output = zeros(out_height, out_width, num_filters, batch_size);
+
     % Perform convolution
-    for n = 1:N                 % Batch loop
-        for c_out = 1:C_out     % Output channels
+    for n = 1:N                  % Batch loop
+        for c_out = 1:C_out      % Output channels
             for h = 1:outH       % Height loop
-                for w = 1:outW   % Width loop
+                for w = 1:outW   % Width  loop
                     h_start = (h-1)*stride(1) + 1;
                     h_end = h_start + kH - 1;
                     w_start = (w-1)*stride(2) + 1;
