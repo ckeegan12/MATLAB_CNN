@@ -1,44 +1,46 @@
 function output = Conv2d(input)
-    % input: 4D tensor with size [height, width, channels, batch_size]
-    % output: 4D tensor after applying the convolution with size [height, width, 16, batch_size]
+    % input: 4D tensor with size [batch_size, height, width, channels]
+    % output: 4D tensor after applying the convolution with size [batch_size, height, width, channels]
 
     % Parameters
-    [height, width, channels, batch_size] = size(input);  % Get input size
-    out_channels = 16;   % Number of output channels
-    kernel_size = 3;     % Kernel size
-    stride = 1;          % Stride
-    padding = 1;         % Padding
+    [batch_size, height, width, channels] = size(input);  % Get input size
+    feature_maps = 16;                                    % Number of feature maps
+    kernel_size = 3;                                      % 3x3 Kernel 
+    stride = 1;                                           % Stride
+    padding = 1;                                          % Padding
 
-    % Define the filters (kernels) randomly
-    filters = randn(kernel_size, kernel_size, channels, num_filters);  % 3x3 filter, 3 input channels, 16 output channels
+    % Initialize Filters 
+    filters = randn(kernel_size, kernel_size, channels, feature_maps);  % 3x3xchannels filter for the 16 feature maps
 
-    % Apply padding to the input (padding of 1 means 1 pixel around all sides)
-    padded_input = padarray(input, [padding padding], 0, 'both');  % Pad with zeros
+    % Apply Padding Around Input
+    padded_input = padarray(input, [padding padding], 0, 'both');       % Pad with zeros around input
 
-    % Output size calculation
-    out_height = (height + 2 * padding - kernel_size) / stride + 1;
+    % Output Size Calculation
+    out_height = (height + 2 * padding - kernel_size) / stride + 1;     % Ouput height and convolution
     out_width = (width + 2 * padding - kernel_size) / stride + 1;
 
-    % Initialize the output
-    output = zeros(out_height, out_width, num_filters, batch_size);
+    % Initialize Convolution Output
+    output = zeros(batch_size, out_height, out_width, feature_maps);
 
     % Perform convolution
-    for n = 1:N                  % Batch loop
-        for c_out = 1:C_out      % Output channels
-            for h = 1:outH       % Height loop
-                for w = 1:outW   % Width  loop
-                    h_start = (h-1)*stride(1) + 1;
-                    h_end = h_start + kH - 1;
-                    w_start = (w-1)*stride(2) + 1;
-                    w_end = w_start + kW - 1;
+    for N = 1:batch_size                                % Batch loop
+        for C = 1:channels                              % Channels loop
+            for K = 1:feature_maps                      % Filter loop
+                for H = 1:out_height                    % Height loop
+                    for W = 1:out_width                 % Width  loop
                     
-                    % Extract input patch
-                    patch = input(h_start:h_end, w_start:w_end, :, n);
-                    
-                    % Element-wise multiplication and sum
-                    conv_sum = sum(patch .* weights(:,:,:,c_out), 'all');
-                    
-                    output(h, w, c_out, n) = conv_sum;
+                        % Input Image elements
+                        h_start = (H-1)*stride + 1;
+                        h_end = h_start + kernel_size - 1;
+                        w_start = (W-1)*stride + 1;
+                        w_end = w_start + kernel_size - 1;
+
+                        % Convolution Patch
+                        Patch = padded_input(N, h_start:h_end, w_start:w_end, :)
+
+                        % Convolution Of Kernel And Patch
+                        output(N,H,W,C) = sum(Patch .* filters(:,:,K,C))
+                    end
                 end
             end
         end
