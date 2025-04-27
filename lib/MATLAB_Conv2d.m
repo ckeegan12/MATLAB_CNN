@@ -10,7 +10,7 @@ function output = Conv2d(input)
     padding = 1;                                          % Padding
 
     % Initialize Filters 
-    filters = randn(kernel_size, kernel_size, channels, feature_maps);  % 3x3xchannels filter for the 16 feature maps
+    filters = randn(kernel_size, kernel_size, feature_maps);  % 3x3xchannels filter for the 16 feature maps
 
     % Apply Padding Around Input
     padded_input = padarray(input, [padding padding], 0, 'both');       % Pad with zeros around input
@@ -39,10 +39,11 @@ function output = Conv2d(input)
                         Patch = padded_input(N, h_start:h_end, w_start:w_end, :)
 
                         % Convolution Of Kernel And Patch
-                        output(N,H,W,C) = sum(Patch .* filters(:,:,K,C))
+                        output(N,H,W,K) = sum(Patch .* filters(:,:,K))
                     end
                 end
             end
         end
     end
 end
+
