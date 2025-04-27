@@ -1,18 +1,18 @@
 function output = ReLu(input)
-  % input: 4D tensor with size [batch_size, height, width, channels]
-  % output: 4D tensor after applying the convolution with size [batch_size, height, width, channels]
+  % input: tensor with size [batch_size, height, width, feature_maps]
+  % output: tensor after applying the ReLu Activation function with size [batch_size, height, width, feature_maps]
   
   % Input Size 
-  [batch_size, height, width, channels] = size(input);
+  [batch_size, height, width, feature_maps] = size(input);
 
   % Initialize ReLu Output
   output = zeros(batch_size, out_height, out_width, feature_maps);
 
   % ReLu Activation Loop
   for N = 1:batch_size
-    for H = 1:height
+    for C = 1:feature_maps
       for W = 1:width
-        for C = 1:channels
+        for H = 1:height
           if (input(N,H,W,C) > 0)
             output(N,H,W,C) = input(N,H,W,C);
           else
