@@ -18,24 +18,22 @@ end
 
 %%%%%%%%% Feature Learning %%%%%%%%%
 
-% Convolution + ReLu Layer 1
+% Feature Extraction Pipeline
 Conv_1 = MATLAB_Conv2d(X_Train);
 Out_1 = ReLu(Conv_1);
-
-% Average Pooling Layer 1
 Pooling_out_1 = Average_Pooling(Out_1);
 
-% Convolution + ReLu Layer 2
 Conv_2 = MATLAB_Conv2d(Pooling_out_1);
 Out_2 = ReLu(Conv_2);
-
-% Average Pooling Layer 2
 Pooling_out_2 = Average_Pooling(Out_2);
 
+Conv_3 = MATLAB_Conv2d(Pooling_out_2);
+Out_3 = ReLu(Conv_3);
+Pooling_out_3 = Average_Pooling(Out_3);
+
 %%%%% Feature Learing Complete %%%%%
-flat_array = Flattening(Pooling_out_2);
 
-%%%%%%% Classification Layer %%%%%%%
-
-flatten_array = Flattening(Pooling_out_2);
+% Flatten and classify
+flatten_array = Flattening(Pooling_out_3);
 class_output = Hidden_Layers(flatten_array);
+

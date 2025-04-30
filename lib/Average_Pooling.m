@@ -1,9 +1,8 @@
 function output = Average_Pooling(input)
-  % input: tensor with size [batch_size, height, width, feature_maps]
-  % output: tensor after applying the Max Pooling with size [batch_size, height, width, pooling_layers]
-
+  % input: tensor with size [height, width, feature_maps, batch_size]
+  % output: tensor after applying the Max Pooling with same size of input
   % Parameters
-  [batch_size, height, width, feature_maps] = size(input);  % Get input size
+  [height, width, feature_maps, batch_size] = size(input);  % Get input size
   Pool_layers = 16;                                     % Number of pooling layers
   Pool_size = 3;                                        % 3x3 Patch 
   stride = 3;                                           % Pooling stride
@@ -28,10 +27,10 @@ function output = Average_Pooling(input)
           w_end = w_start + pool_size(2) - 1;
          
           % Extract window
-          window = input(N, h_start:h_end, w_start:w_end, K);
+          window = input(h_start:h_end, w_start:w_end, K, N);
          
           % Compute average
-          output(N, H, W, K) = mean(window(:));
+          output(H, W, K, N) = mean(window(:));
 
         end
       end
