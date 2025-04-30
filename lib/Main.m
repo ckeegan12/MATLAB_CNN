@@ -33,9 +33,9 @@ Out_2 = ReLu(Conv_2);
 Pooling_out_2 = Average_Pooling(Out_2);
 
 %%%%% Feature Learing Complete %%%%%
+flat_array = Flattening(Pooling_out_2);
 
 %%%%%%% Classification Layer %%%%%%%
 
-Flatten_array = Flattening(Pooling_out_2);
-
-output = SoftMax();
+flatten_array = Flattening(Pooling_out_2);
+class_output = Hidden_Layers(flatten_array);
