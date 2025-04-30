@@ -1,64 +1,43 @@
 function output = Hidden_Layers(input)
-  % Input: matrix output from feature learning size = [Batch_size, feature maps pixals]
-  % Output: matrix for BackPropagation functions size = [Batch_size, total pixals in feature maps]
-
+  % Input: 2D matrix [batch_size, features]
+  % Output: 2D matrix [batch_size, output_features]
+  
   % Parameters
-  [batch_size,elements] = size(input);              % Elements in input 
-  layers = 3;                                       % Number of hidden layers
-
-  % Initialization
-  weights = randn(batch_size,size,1,layers);        % Initializing weights as column vector
-  bias = randn(batch_size,size,1,layers);           % Initializing biases as column vector
-  layer1_output = zeros(batch_size,size,1);         % Initializing first layer 
-  layer2_output = zeros(batch_size,size,1);         % Initializing second layer
-  layer3_output = zeros(batch_size,size,1);         % Initializing thrid layer
-  output = zeros(batch_size,size,1);                % Initializing output of hidden layers
-
-  for Batch = 1:Batch_size
-  %%%%%%% Layer 1 %%%%%%%
-
-    % Forward Propagation
-    for M = 1:size
-      layer1_output(Batch,M) = rowVec(Batch,M) * weights(Batch,M,1,1) + bias(Batch,M,1,1);
-    end
-
-    % ReLu
-    for N = 1:size
-      if layer1_output(Batch,N) < 0 
-        layer1_output(Batch,N) = 0;
-      end
-    end
-
-    %%%%%%% Layer 2 %%%%%%%
-
-    % Forward Propagation
-    for B = 1:size
-      layer2_output(Batch,B) = layer1_output(Batch,B) * weights(Batch,B,1,2) + bias(Batch,B,1,2);
-    end
-
-    % ReLu
-    for V = 1:size
-      if layer2_output(Batch,V) < 0 
-        layer2_output(Batch,V) = 0;
-      end
-    end
-
-    %%%%%%% Layer 3 %%%%%%%
-
-    % Forward Propagation
-    for C = 1:size
-      layer3_output(Batch,C) = layer2_output(Batch,C) * weights(Batch,C,1,3) + bias(Batch,C,1,3);
-    end
-
-    % ReLu
-    for X = 1:size
-      if layer3_output(Batch,X) < 0 
-        layer3_output(Batch,X) = 0;
-      end
-    end
-
-    % SoftMax Final Layer Output
-    output(Batch) = SoftMax(Batch,layer3_output);
+  [batch_size, input_features] = size(input);
+  hidden_units = 128;                               % Number of neurons in hidden layers
+  output_features = 10;                             % 10 classes for CIFAR-10
+  num_layers = 3;
+  
+  % Initialize weights and biases
+  weights = cell(1, num_layers);
+  biases = cell(1, num_layers);
+  
+  % Layer 1
+  weights{1} = randn(input_features, hidden_units) * 0.01;
+  biases{1} = zeros(1, hidden_units);
+  
+  % Layer 2
+  weights{2} = randn(hidden_units, hidden_units) * 0.01;
+  biases{2} = zeros(1, hidden_units);
+  
+  % Layer 3
+  weights{3} = randn(hidden_units, output_features) * 0.01;
+  biases{3} = zeros(1, output_features);
+  
+  % Forward pass
+  layer_output = input;
+  
+  for layer = 1:num_layers-1
+      % Linear transformation
+      layer_output = layer_output * weights{layer} + biases{layer};
+      
+      % ReLU activation
+      layer_output = max(0, layer_output);
   end
-
+  
+  % Final layer
+  output = layer_output * weights{3} + biases{3};
+  
+  % Softmax
+  output = softmax(output, 2);
 end

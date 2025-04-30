@@ -15,6 +15,13 @@ end
 
 % Cifar10 training and testing sets 
 [X_Train,Y_Train,X_Test,Y_Test] = loadCIFARData(downloadFolder);
+X_Train = single(X_Train)/255;
+X_Test = single(X_Test)/255;
+
+% Hyper parameters
+learningRate = 0.001;
+numEpochs = 10;
+
 
 %%%%%%%%% Feature Learning %%%%%%%%%
 
