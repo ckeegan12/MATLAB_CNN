@@ -15,6 +15,8 @@ end
 
 % Cifar10 training and testing sets 
 [X_Train,Y_Train,X_Test,Y_Test] = loadCIFARData(downloadFolder);
+
+% Normalize Input
 X_Train = single(X_Train)/255;
 X_Test = single(X_Test)/255;
 
@@ -42,5 +44,27 @@ Pooling_out_3 = Average_Pooling(Out_3);
 
 % Flatten and classify
 flatten_array = Flattening(Pooling_out_3);
-class_output = Hidden_Layers(flatten_array);
+
+hidden_units = 128;                               % Number of neurons in hidden layers
+output_features = 10;                             % 10 classes for CIFAR-10
+num_layers = 3;                                   % 3 hidden layers
+input_features = size(flatten_array,2);
+
+% Initialize weights and biases
+weights = cell(1, num_layers);
+biases = cell(1, num_layers);
+
+% Layer 1
+weights{1} = randn(input_features, hidden_units) * 0.01;
+biases{1} = zeros(1, hidden_units);
+
+% Layer 2
+weights{2} = randn(hidden_units, hidden_units) * 0.01;
+biases{2} = zeros(1, hidden_units);
+
+% Layer 3
+weights{3} = randn(hidden_units, output_features) * 0.01;
+biases{3} = zeros(1, output_features);
+
+class_output = Hidden_Layers(flatten_array,weights,bias);
 
