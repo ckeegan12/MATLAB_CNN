@@ -66,5 +66,44 @@ biases{2} = zeros(1, hidden_units);
 weights{3} = randn(hidden_units, output_features) * 0.01;
 biases{3} = zeros(1, output_features);
 
-class_output = Hidden_Layers(flatten_array,weights,bias);
+%%%%%%% Back Propagation %%%%%%%
 
+for epoch = 1:numEpochs
+    fprintf('Epoch %d\n', epoch);
+
+    % Classification output
+    class_output = Hidden_Layers(flatten_array,weights,bias);
+    loss = Cross_entropy_loss(Y_Train, class_output);
+    fprintf('Loss: %.4f\n', loss);
+
+    % Compute gradients of weights
+    grad_output = class_output - onehotencode(Y_Train, 2);
+    
+    % Initialize gradients
+    grad_weights = cell(1, num_layers);
+    grad_biases = cell(1, num_layers);
+
+    % Layer 3 gradient
+    grad_weights{3} = (flatten_array' * grad_output) / size(flatten_array, 1);
+    grad_biases{3} = mean(grad_output, 1);
+    
+    % Layer 2 gradient
+    grad_weights{2} = (flatten_array' * grad_output) / size(flatten_array, 1);
+    grad_biases{2} = mean(grad_output, 1);
+
+    % Layer 1 gradient
+    grad_weights{1} = (flatten_array' * grad_output) / size(flatten_array, 1);
+    grad_biases{1} = mean(grad_output, 1);
+    
+    
+    % Update weights and biases
+    for n = 1:num_layers
+        weights{n} = weights{n} - learningRate * grad_weights{n};
+        biases{n} = biases{n} - learningRate * grad_biases{n};
+    end
+    
+    % Calculate accuracy
+    [~, predicted_labels] = max(class_probabilities, [], 2);
+    accuracy = mean(predicted_labels == (Y_Train + 1));  
+    fprintf('Accuracy: %.2f%%\n', accuracy * 100);
+end

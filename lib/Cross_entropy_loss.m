@@ -13,4 +13,5 @@ function loss = Cross_entropy_loss(Y_Train,input)
   
   % Compute cross-entropy loss
   loss = -sum(sum(Y_Train_onehot .* log(input))) / batch_size;
+  
 end
