@@ -21,34 +21,11 @@ X_Train = single(X_Train)/255;
 X_Test = single(X_Test)/255;
 
 % Hyper parameters
-learningRate = 0.001;
-numEpochs = 10;
-
-
-%%%%%%%%% Feature Learning %%%%%%%%%
-
-% Feature Extraction Pipeline
-Conv_1 = MATLAB_Conv2d(X_Train);
-Out_1 = ReLu(Conv_1);
-Pooling_out_1 = Average_Pooling(Out_1);
-
-Conv_2 = MATLAB_Conv2d(Pooling_out_1);
-Out_2 = ReLu(Conv_2);
-Pooling_out_2 = Average_Pooling(Out_2);
-
-Conv_3 = MATLAB_Conv2d(Pooling_out_2);
-Out_3 = ReLu(Conv_3);
-Pooling_out_3 = Average_Pooling(Out_3);
-
-%%%%% Feature Learing Complete %%%%%
-
-% Flatten and classify
-flatten_array = Flattening(Pooling_out_3);
-
+learningRate = 0.001;                             % Learning rate for weights + biases updates 
+numEpochs = 10;                                   % Number of iterations through data set
 hidden_units = 128;                               % Number of neurons in hidden layers
 output_features = 10;                             % 10 classes for CIFAR-10
 num_layers = 3;                                   % 3 hidden layers
-input_features = size(flatten_array,2);
 
 % Initialize weights and biases
 weights = cell(1, num_layers);
@@ -70,6 +47,27 @@ biases{3} = zeros(1, output_features);
 
 for epoch = 1:numEpochs
     fprintf('Epoch %d\n', epoch);
+
+    %%%%%%%%% Feature Learning %%%%%%%%%
+
+    % Feature Extraction Pipeline
+    Conv_1 = MATLAB_Conv2d(X_Train);
+    Out_1 = ReLu(Conv_1);
+    Pooling_out_1 = Average_Pooling(Out_1);
+
+    Conv_2 = MATLAB_Conv2d(Pooling_out_1);
+    Out_2 = ReLu(Conv_2);
+    Pooling_out_2 = Average_Pooling(Out_2);
+
+    Conv_3 = MATLAB_Conv2d(Pooling_out_2);
+    Out_3 = ReLu(Conv_3);
+    Pooling_out_3 = Average_Pooling(Out_3);
+
+    %%%%% Feature Learing Complete %%%%%
+
+    % Flatten and classify
+    flatten_array = Flattening(Pooling_out_3);
+    input_features = size(flatten_array,2);
 
     % Classification output
     class_output = Hidden_Layers(flatten_array,weights,bias);
