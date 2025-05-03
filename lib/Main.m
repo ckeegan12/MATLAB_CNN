@@ -43,27 +43,23 @@ biases{2} = zeros(1, hidden_units);
 weights{3} = randn(hidden_units, output_features) * 0.01;
 biases{3} = zeros(1, output_features);
 
-%%%%%%% Back Propagation %%%%%%%
+%%%% Feature Extracting Pipeline %%%%
+Conv_1 = MATLAB_Conv2d(X_Train);
+Out_1 = ReLu(Conv_1);
+Pooling_out_1 = Average_Pooling(Out_1);
 
+Conv_2 = MATLAB_Conv2d(Pooling_out_1);
+Out_2 = ReLu(Conv_2);
+Pooling_out_2 = Average_Pooling(Out_2);
+
+Conv_3 = MATLAB_Conv2d(Pooling_out_2);
+Out_3 = ReLu(Conv_3);
+Pooling_out_3 = Average_Pooling(Out_3);
+%%%%% Feature Learing Complete %%%%%
+
+%%%%%%% Foward/Back Propagation %%%%%%%
 for epoch = 1:numEpochs
     fprintf('Epoch %d\n', epoch);
-
-    %%%%%%%%% Feature Learning %%%%%%%%%
-
-    % Feature Extraction Pipeline
-    Conv_1 = MATLAB_Conv2d(X_Train);
-    Out_1 = ReLu(Conv_1);
-    Pooling_out_1 = Average_Pooling(Out_1);
-
-    Conv_2 = MATLAB_Conv2d(Pooling_out_1);
-    Out_2 = ReLu(Conv_2);
-    Pooling_out_2 = Average_Pooling(Out_2);
-
-    Conv_3 = MATLAB_Conv2d(Pooling_out_2);
-    Out_3 = ReLu(Conv_3);
-    Pooling_out_3 = Average_Pooling(Out_3);
-
-    %%%%% Feature Learing Complete %%%%%
 
     % Flatten and classify
     flatten_array = Flattening(Pooling_out_3);
